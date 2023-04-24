@@ -1,6 +1,8 @@
-use sudoku_solver_rust::{create_board, display_sudoku_board, read_sudoku_files};
+use std::env;
+use sudoku_solver_rust::run;
+
 fn main() {
-    let sudoku_line = read_sudoku_files().unwrap();
-    let sudoku_board = create_board(sudoku_line).unwrap();
-    display_sudoku_board(sudoku_board);
+    let sudoku_file_dir: String = env::var("SUDOKU_FILE_DIR").unwrap_or("data/".to_string());
+    let sudoku_file_name = "0.txt".to_string();
+    run(sudoku_file_dir, sudoku_file_name);
 }
