@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
+pub mod solver;
 pub struct Sudoku {
     board: Vec<Vec<char>>,
 }
@@ -42,8 +43,4 @@ pub fn display_sudoku_board(sudoku: &Sudoku) {
         }
     }
     println!("{board_string}");
-}
-
-pub mod solver {
-    pub fn solve_sudoku(mut _sudoku: &Sudoku) {}
 }
