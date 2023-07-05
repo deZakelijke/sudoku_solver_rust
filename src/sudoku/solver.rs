@@ -4,7 +4,7 @@ pub fn solve_sudoku(mut _sudoku: &Sudoku) {}
 fn check_block_correctness(sudoku: &Sudoku, index: usize) -> bool {
     let mut block = Vec::new();
     for i in 0..9 {
-        block.push(sudoku.board[i % 3 + index / 3][i / 3 + index % 3]);
+        block.push(sudoku.board[i % 3 + (index / 3) * 3][i / 3 + (index % 3) * 3]);
     }
     let dups = check_duplicates_in_slice(&block);
     let zeros = block.contains(&'0');
@@ -123,5 +123,27 @@ mod tests {
         )
         .unwrap();
         assert!(check_block_correctness(&sudoku, 0));
+        let sudoku = create_board(
+            "000000000000000000000000000000123000000456000000789000000000000000000000000000000"
+                .to_string(),
+        )
+        .unwrap();
+        assert!(check_block_correctness(&sudoku, 4));
+        let sudoku = create_board(
+            "000000000000000000000000000000000000000000000000000000000000123000000456000000789"
+                .to_string(),
+        )
+        .unwrap();
+        assert!(check_block_correctness(&sudoku, 8));
+    }
+
+    #[test]
+    fn sudoku_correct() {
+        let sudoku = create_board(
+            "123456789456789123789123456234567891567891234891234567345678912678912345912345678"
+                .to_string(),
+        )
+        .unwrap();
+        assert!(check_correctness_of_sudoku(&sudoku));
     }
 }
