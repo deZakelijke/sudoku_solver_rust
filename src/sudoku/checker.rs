@@ -5,14 +5,12 @@ fn check_block_correctness(sudoku: &Sudoku, index: usize) -> bool {
         block.push(sudoku.board[i % 3 + (index / 3) * 3][i / 3 + (index % 3) * 3]);
     }
     let dups = check_duplicates_in_slice(&block);
-    let zeros = block.contains(&'0');
-    !dups && !zeros
+    !dups
 }
 fn check_row_correctness(sudoku: &Sudoku, index: usize) -> bool {
     let row = &sudoku.board[index];
     let dups = check_duplicates_in_slice(row);
-    let zeros = row.contains(&'0');
-    !dups && !zeros
+    !dups
 }
 fn check_column_correctness(sudoku: &Sudoku, index: usize) -> bool {
     let mut column = Vec::new();
@@ -20,10 +18,10 @@ fn check_column_correctness(sudoku: &Sudoku, index: usize) -> bool {
         column.push(sudoku.board[i][index]);
     }
     let dups = check_duplicates_in_slice(&column);
-    let zeros = column.contains(&'0');
-    !dups && !zeros
+    !dups
 }
 fn check_duplicates_in_slice(slice: &Vec<char>) -> bool {
+    let slice: Vec<char> = slice.iter().filter(|s| **s != '0').map(|s| *s).collect();
     for i in 1..slice.len() {
         if slice[i..].contains(&slice[i - 1]) {
             return true;
@@ -45,6 +43,19 @@ pub fn check_correctness_of_sudoku(sudoku: &Sudoku) -> bool {
         }
     }
     true
+}
+
+pub fn check_sudoku_is_filled(sudoku: &Sudoku) -> bool {
+    for row in sudoku.board.iter() {
+        if row.contains(&'0') {
+            return false;
+        }
+    }
+    true
+}
+
+pub fn check_sudoku_completed(sudoku: &Sudoku) -> bool {
+    check_sudoku_is_filled(sudoku) && check_correctness_of_sudoku(sudoku)
 }
 
 #[cfg(test)]
