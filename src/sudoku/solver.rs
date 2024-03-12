@@ -12,6 +12,11 @@ fn simple_solver(sudoku: &mut Sudoku) {
     fill_value_and_check(sudoku).unwrap();
 }
 
+/// Solve the sudoku by findin the first empty cell, trying a value that is not directly
+/// blocked, and then continuing to the next cell. If there are no options for an empty
+/// cell, backtrack and try the next value for the last cell that was filled in.
+/// If all options for a call have been tried, backtrack further and try the next option
+/// for the last cell before that.
 fn fill_value_and_check(sudoku: &mut Sudoku) -> Result<&Sudoku, ()> {
     if checker::check_sudoku_completed(&sudoku) {
         return Ok(sudoku);
@@ -19,16 +24,14 @@ fn fill_value_and_check(sudoku: &mut Sudoku) -> Result<&Sudoku, ()> {
     if let Ok((row_index, column_index, options)) = choose_first_possible_value(sudoku) {
         for option in options.iter() {
             sudoku.board[row_index][column_index] = *option;
-            if checker::check_correctness_of_sudoku(sudoku) {
-                match fill_value_and_check(sudoku) {
-                    Ok(_) => {
-                        return Ok(sudoku);
-                    }
-                    Err(_) => {
-                        sudoku.board[row_index][column_index] = '0';
-                    }
-                };
-            }
+            match fill_value_and_check(sudoku) {
+                Ok(_) => {
+                    return Ok(sudoku);
+                }
+                Err(_) => {
+                    sudoku.board[row_index][column_index] = '0';
+                }
+            };
         }
         return Err(());
     } else {
