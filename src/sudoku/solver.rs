@@ -42,7 +42,11 @@ fn choose_first_possible_value(sudoku: &Sudoku) -> Result<(usize, usize, Vec<cha
         for j in 0..sudoku.board[i].len() {
             if sudoku.board[i][j] == '0' {
                 let possible_values = check_possible_values(sudoku, i, j);
-                return Ok((i, j, possible_values));
+                if possible_values != [] {
+                    return Ok((i, j, possible_values));
+                } else {
+                    return Err(());
+                }
             }
         }
     }
@@ -80,7 +84,122 @@ fn check_possible_values(sudoku: &Sudoku, row: usize, column: usize) -> Vec<char
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::checker::check_correctness_of_sudoku;
     use crate::sudoku::create_board;
+
+    #[test]
+    fn fill_empty_sudoku() {
+        let mut sudoku = create_board(
+            "000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000"
+                .to_string(),
+        )
+        .unwrap();
+        fill_value_and_check(&mut sudoku).unwrap();
+        assert!(check_correctness_of_sudoku(&sudoku));
+    }
+
+    #[test]
+    fn get_index_and_possible_values_of_empty_sudoku() {
+        let sudoku = create_board(
+            "000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000"
+                .to_string(),
+        )
+        .unwrap();
+        assert_eq!(
+            choose_first_possible_value(&sudoku).unwrap(),
+            (0, 0, vec!['1', '2', '3', '4', '5', '6', '7', '8', '9'])
+        );
+    }
+
+    #[test]
+    fn get_error_when_looking_for_value_to_fill_on_full_suduku() {
+        let sudoku = create_board(
+            "123456789\
+             456789123\
+             789123456\
+             234567891\
+             567891234\
+             891234567\
+             345678912\
+             678912345\
+             912345678"
+                .to_string(),
+        )
+        .unwrap();
+        assert_eq!(choose_first_possible_value(&sudoku), Err(()));
+    }
+
+    #[test]
+    fn get_error_when_looking_for_value_in_blocked_cell() {
+        let sudoku = create_board(
+            "012345678\
+             900000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000"
+                .to_string(),
+        )
+        .unwrap();
+        assert_eq!(choose_first_possible_value(&sudoku), Err(()));
+    }
+    #[test]
+    fn get_value_when_looking_for_value_in_sudoku() {
+        let sudoku = create_board(
+            "012345678\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000"
+                .to_string(),
+        )
+        .unwrap();
+        assert_eq!(
+            choose_first_possible_value(&sudoku).unwrap(),
+            (0, 0, vec!['9'])
+        );
+
+        let sudoku = create_board(
+            "123456789\
+             456789123\
+             789123456\
+             234567891\
+             567891234\
+             891200067\
+             345678912\
+             678912345\
+             912305678"
+                .to_string(),
+        )
+        .unwrap();
+        assert_eq!(
+            choose_first_possible_value(&sudoku).unwrap(),
+            (5, 4, vec!['3', '4'])
+        );
+    }
 
     #[test]
     fn get_possible_values_of_empty_sudoku() {
