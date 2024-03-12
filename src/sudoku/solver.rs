@@ -1,7 +1,6 @@
 use crate::sudoku::checker;
 use crate::sudoku::Sudoku;
 use std::collections::HashSet;
-use std::error::Error;
 
 pub fn solve_sudoku(sudoku: &mut Sudoku, algorithm: String) {
     if algorithm == "simple" {
@@ -13,22 +12,27 @@ fn simple_solver(sudoku: &mut Sudoku) {
     fill_value_and_check(sudoku).unwrap();
 }
 
-fn fill_value_and_check(sudoku: &mut Sudoku) -> Result<&Sudoku, Box<dyn Error>> {
+fn fill_value_and_check(sudoku: &mut Sudoku) -> Result<&Sudoku, ()> {
+    if checker::check_sudoku_completed(&sudoku) {
+        return Ok(sudoku);
+    }
     if let Ok((row_index, column_index, options)) = choose_first_possible_value(sudoku) {
         for option in options.iter() {
             sudoku.board[row_index][column_index] = *option;
             if checker::check_correctness_of_sudoku(sudoku) {
                 match fill_value_and_check(sudoku) {
-                    Ok(_) => break,
+                    Ok(_) => {
+                        return Ok(sudoku);
+                    }
                     Err(_) => {
                         sudoku.board[row_index][column_index] = '0';
                     }
                 };
             }
         }
-        Ok(sudoku)
+        return Err(());
     } else {
-        Ok(sudoku)
+        return Err(());
     }
 }
 
@@ -196,6 +200,24 @@ mod tests {
             choose_first_possible_value(&sudoku).unwrap(),
             (5, 4, vec!['3', '4'])
         );
+
+        // let sudoku = create_board(
+        //     "241736589\
+        //      573924106\
+        //      800501002\
+        //      700295018\
+        //      009400305\
+        //      652800007\
+        //      465080071\
+        //      000159004\
+        //      908007053"
+        //         .to_string(),
+        // )
+        // .unwrap();
+        // assert_eq!(
+        //     choose_first_possible_value(&sudoku).unwrap(),
+        //     (1, 7, vec!['8', '4'])
+        // );
     }
 
     #[test]
