@@ -1,4 +1,4 @@
-use std::fs::File;
+use std::fs::{read_to_string, File};
 use std::io::{BufRead, BufReader};
 
 pub mod checker;
@@ -7,13 +7,28 @@ pub struct Sudoku {
     board: Vec<Vec<char>>,
 }
 
-pub fn read_sudoku_files(mut file_dir: String, file_name: &str) -> Result<String, ()> {
+/// Read the first sudoku from a file that contains sudokus as a string of 81 chars on
+/// one line.
+pub fn read_single_sudoku_from_file(mut file_dir: String, file_name: &str) -> Result<String, ()> {
     file_dir.push_str(file_name);
 
     let sudoku_file = File::open(file_dir).unwrap();
     let buffer = BufReader::new(sudoku_file);
     let sudoku_line = buffer.lines().next().unwrap().unwrap();
-    Ok(sudoku_line)
+    return Ok(sudoku_line);
+}
+pub fn read_all_sudokus_from_file(
+    mut file_dir: String,
+    file_name: &str,
+) -> Result<Vec<String>, ()> {
+    file_dir.push_str(file_name);
+
+    let mut sudoku_lines: Vec<String> = Vec::new();
+
+    for line in read_to_string(file_dir).unwrap().lines() {
+        sudoku_lines.push(line.to_string());
+    }
+    return Ok(sudoku_lines);
 }
 
 pub fn create_board(sudoku_line: String) -> Result<Sudoku, ()> {
