@@ -68,9 +68,6 @@ fn check_possible_values(sudoku: &Sudoku, row: usize, column: usize) -> Vec<char
         existing_column_values.insert(col_value.clone());
         existing_block_values.insert(block_value.clone());
     }
-    println!("Existing_row_values: {existing_row_values:?}");
-    println!("Existing column values: {existing_column_values:?}");
-    println!("Existing block values {existing_block_values:?}");
     existing_row_values.extend(&existing_column_values);
     existing_row_values.extend(&existing_block_values);
     let possible_values = vec!['1', '2', '3', '4', '5', '6', '7', '8', '9']
