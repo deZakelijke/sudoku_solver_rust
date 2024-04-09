@@ -2,6 +2,8 @@ use crate::sudoku::checker;
 use crate::sudoku::Sudoku;
 use std::collections::HashSet;
 
+pub mod simple_solver;
+
 pub fn solve_sudoku(sudoku: &mut Sudoku, algorithm: String) {
     if algorithm == "simple" {
         simple_solver(sudoku);

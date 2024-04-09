@@ -22,7 +22,6 @@ pub fn read_all_sudokus_from_file(
     file_name: &str,
 ) -> Result<Vec<String>, ()> {
     file_dir.push_str(file_name);
-
     let mut sudoku_lines: Vec<String> = Vec::new();
 
     for line in read_to_string(file_dir).unwrap().lines() {
