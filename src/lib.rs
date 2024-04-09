@@ -1,4 +1,3 @@
-use crate::sudoku::checker;
 use crate::sudoku::{
     Sudoku, read_all_sudokus_from_file, read_single_sudoku_from_file,
 };
@@ -14,7 +13,7 @@ pub fn run(sudoku_file_dir: String, sudoku_file_name: String) {
             let mut sudoku = Sudoku::create_board(sudoku_line.clone()).unwrap();
             let algorithm = String::from("simple");
             sudoku.solve_sudoku(algorithm);
-            checker::check_sudoku_completed(&sudoku);
+            sudoku.check_sudoku_completed();
         }
     } else {
         let sudoku_line = read_single_sudoku_from_file(sudoku_file_dir, &sudoku_file_name).unwrap();
@@ -22,7 +21,7 @@ pub fn run(sudoku_file_dir: String, sudoku_file_name: String) {
         let algorithm = String::from("simple");
         sudoku.display_sudoku_board();
         sudoku.solve_sudoku(algorithm);
-        checker::check_sudoku_completed(&sudoku);
+        sudoku.check_sudoku_completed();
         sudoku.display_sudoku_board();
     }
 }

@@ -1,4 +1,3 @@
-use crate::sudoku::checker;
 use crate::sudoku::Sudoku;
 use std::collections::HashSet;
 
@@ -20,7 +19,7 @@ impl Sudoku {
     /// If all options for a call have been tried, backtrack further and try the next option
     /// for the last cell before that.
     fn fill_value_and_check(&mut self) -> Result<&Self, ()> {
-        if checker::check_sudoku_completed(&self) {
+        if self.check_sudoku_completed() {
             return Ok(self);
         }
         if let Ok((row_index, column_index, options)) = self.choose_first_possible_value() {
@@ -90,7 +89,6 @@ impl Sudoku {
 
 #[cfg(test)]
 mod tests {
-    use crate::checker::check_correctness_of_sudoku;
     use crate::sudoku::Sudoku;
 
     #[test]
@@ -109,7 +107,7 @@ mod tests {
         )
         .unwrap();
         sudoku.fill_value_and_check().unwrap();
-        assert!(check_correctness_of_sudoku(&sudoku));
+        assert!(sudoku.check_correctness_of_sudoku());
     }
 
     #[test]
