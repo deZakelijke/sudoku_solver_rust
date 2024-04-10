@@ -171,24 +171,6 @@ mod tests {
             sudoku.choose_first_possible_value().unwrap(),
             (5, 4, vec!['3', '4'])
         );
-
-        // let sudoku = Sudoku::create_board(
-        //     "241736589\
-        //      573924106\
-        //      800501002\
-        //      700295018\
-        //      009400305\
-        //      652800007\
-        //      465080071\
-        //      000159004\
-        //      908007053"
-        //         .to_string(),
-        // )
-        // .unwrap();
-        // assert_eq!(
-        //     choose_first_possible_value(&sudoku).unwrap(),
-        //     (1, 7, vec!['8', '4'])
-        // );
     }
 
 }

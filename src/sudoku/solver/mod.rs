@@ -3,10 +3,12 @@ use std::collections::HashSet;
 
 mod simple_solver;
 mod most_restricted_cell_first;
+mod empty_cell_hash_map_most_restricted;
 
 pub enum SolverAlgorithm {
     Simple,
     MostRestricted,
+    EmptyCellHashMap,
 }
 
 impl Sudoku {
@@ -14,6 +16,7 @@ impl Sudoku {
         match algorithm {
             SolverAlgorithm::Simple => self.simple_solver(),
             SolverAlgorithm::MostRestricted => self.solve_from_most_restricted_cell(),
+            SolverAlgorithm::EmptyCellHashMap => self.solve_with_storing_empty_cell_options(),
         }
     }
 
@@ -43,6 +46,7 @@ impl Sudoku {
     }
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
 
