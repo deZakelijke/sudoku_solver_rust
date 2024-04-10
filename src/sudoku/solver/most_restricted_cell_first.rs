@@ -66,3 +66,122 @@ impl Sudoku {
         Err(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::sudoku::Sudoku;
+
+    #[test]
+    fn fill_empty_sudoku() {
+        let mut sudoku = Sudoku::create_board(
+            "000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000"
+                .to_string(),
+        )
+        .unwrap();
+        sudoku.fill_value_and_check_most_restricted().unwrap();
+        assert!(sudoku.check_correctness_of_sudoku());
+    }
+
+    #[test]
+    fn get_index_and_possible_values_of_empty_sudoku() {
+        let sudoku = Sudoku::create_board(
+            "000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000"
+                .to_string(),
+        )
+        .unwrap();
+        assert_eq!(
+            sudoku.choose_most_restricted_value().unwrap(),
+            (0, 0, vec!['1', '2', '3', '4', '5', '6', '7', '8', '9'])
+        );
+    }
+
+    #[test]
+    fn get_error_when_looking_for_value_to_fill_on_full_suduku() {
+        let sudoku = Sudoku::create_board(
+            "123456789\
+             456789123\
+             789123456\
+             234567891\
+             567891234\
+             891234567\
+             345678912\
+             678912345\
+             912345678"
+                .to_string(),
+        )
+        .unwrap();
+        assert_eq!(sudoku.choose_most_restricted_value(), Err(()));
+    }
+
+    #[test]
+    fn get_error_when_looking_for_value_in_blocked_cell() {
+        let sudoku = Sudoku::create_board(
+            "012345678\
+             900000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000"
+                .to_string(),
+        )
+        .unwrap();
+        assert_eq!(sudoku.choose_most_restricted_value(), Err(()));
+    }
+    #[test]
+    fn get_value_when_looking_for_value_in_sudoku() {
+        let sudoku = Sudoku::create_board(
+            "012345678\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000\
+             000000000"
+                .to_string(),
+        )
+        .unwrap();
+        assert_eq!(
+            sudoku.choose_most_restricted_value().unwrap(),
+            (0, 0, vec!['9'])
+        );
+
+        let sudoku = Sudoku::create_board(
+            "123456789\
+             456789123\
+             789123456\
+             234567891\
+             567891234\
+             891200067\
+             345678912\
+             678912345\
+             912305678"
+                .to_string(),
+        )
+        .unwrap();
+        assert_eq!(
+            sudoku.choose_most_restricted_value().unwrap(),
+            (5, 5, vec!['4'])
+        );
+    }
+}
