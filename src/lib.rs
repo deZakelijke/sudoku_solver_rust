@@ -7,15 +7,15 @@ mod sudoku;
 
 pub fn run(sudoku_file_dir: String, sudoku_file_name: String) {
     let all = true;
-    let algorithm = SolverAlgorithm::MostRestricted;
+    let algorithm = SolverAlgorithm::EmptyCellHashMap;
 
     if all {
         let sudoku_lines = read_all_sudokus_from_file(sudoku_file_dir, &sudoku_file_name).unwrap();
         for (sudoku_number, sudoku_line) in sudoku_lines.iter().enumerate() {
-            println!("Solving sudoku {sudoku_number}");
             let mut sudoku = Sudoku::create_board(sudoku_line.clone()).unwrap();
             sudoku.solve_sudoku(&algorithm);
             if !sudoku.check_sudoku_completed() {
+                println!("Solving sudoku {sudoku_number}");
                 println!("Sudoku not solved correctly")
             }
 
